@@ -1,0 +1,19 @@
+info:
+  contact: {}
+paths:
+  /todos:
+    get:
+      consumes:
+      - application/json
+      description: Gets all todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: Todos
+      summary: Gets all todos
+      tags:
+      - todos
+swagger: "2.0"
