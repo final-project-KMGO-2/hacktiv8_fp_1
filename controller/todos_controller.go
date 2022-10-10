@@ -42,3 +42,7 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 	res := common.BuildResponse(true, "OK", result)
 	ctx.JSON(http.StatusOK, res)
 }
+
+func (c *todosController) CreateNewTodo(ctx *gin.Context){
+	
+}

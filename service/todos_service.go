@@ -9,6 +9,7 @@ import (
 
 type TodosService interface {
 	GetTodos(ctx context.Context) (entity.Todos, error)
+	CreateTodo(ctx context.Context) (entity.Todos, error)
 }
 
 type todosService struct {
@@ -28,4 +29,12 @@ func (s *todosService) GetTodos(ctx context.Context) (entity.Todos, error) {
 		return entity.Todos{}, err
 	}
 	return todos, nil
+}
+
+func (s *todosService) CreateTodo(ctx context.Context) (entity.Todos, error) {
+	todo, err := s.todosRepository.AddNewTodoToJson(ctx);
+	if err != nil {
+		return entity.Todos{}, err
+	}
+	return todo, err
 }
