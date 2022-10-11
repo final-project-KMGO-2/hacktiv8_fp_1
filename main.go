@@ -6,7 +6,6 @@ import (
 	"hacktiv8_fp_1/route"
 	"hacktiv8_fp_1/service"
 	"os"
-
 	"github.com/gin-gonic/gin"
 )
 

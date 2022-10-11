@@ -10,6 +10,6 @@ func TodosRoute(router *gin.Engine, todosController controller.TodosController) 
 	todosRoutes := router.Group("/todos")
 	{
 		todosRoutes.GET("", todosController.GetTodos)
-		todosRoutes.POST("", )
+		todosRoutes.POST("", todosController.CreateNewTodo)
 	}
 }

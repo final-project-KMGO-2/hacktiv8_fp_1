@@ -10,6 +10,7 @@ import (
 
 type TodosController interface {
 	GetTodos(ctx *gin.Context)
+	CreateNewTodo(ctx *gin.Context)
 }
 
 type todosController struct {
@@ -43,6 +44,19 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// func (c *todosController) GetTodoById (ctx *gin.Context) {
+// 	params := ctx.Param("id");
+// 	result, err := c.todosService.GetTodoById(ctx.Request.Context())
+// }
+
+
 func (c *todosController) CreateNewTodo(ctx *gin.Context){
-	
+
+	result, err := c.todosService.CreateTodo(ctx.Request.Context())
+	if err != nil {
+		res := common.BuildErrorResponse("Bad create request", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+	ctx.JSON(http.StatusCreated, common.BuildResponse(true, "Success", result));
 }
