@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"hacktiv8_fp_1/entity"
 	"io/ioutil"
 	"time"
@@ -41,8 +42,23 @@ func (db *todosConnection) GetTodos(ctx context.Context) (entity.Todos, error) {
 }
 
 func (db *todosConnection) GetTodoById(ctx context.Context) (entity.Todos, error) {
-	// ctx.Value()
-	return entity.Todos{}, nil
+	id := ctx.Value("id");
+	data, err := ioutil.ReadFile("./db/db.json")
+
+	var todos []entity.Todos
+
+	err = json.Unmarshal(data, &todos);
+
+	if err != nil {
+		return entity.Todos{}, err
+	}
+
+	for _, todo := range todos {
+		if todo.ID == id {
+			return todo, nil
+		}
+	}
+	return entity.Todos{}, errors.New("data not found");
 }
 
 func (db *todosConnection) AddNewTodoToJson(ctx context.Context) (entity.Todos, error) {

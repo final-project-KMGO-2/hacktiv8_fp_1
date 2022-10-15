@@ -50,10 +50,17 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-// func (c *todosController) GetTodoById (ctx *gin.Context) {
-// 	params := ctx.Param("id");
-// 	result, err := c.todosService.GetTodoById(ctx.Request.Context())
-// }
+func (c *todosController) GetTodoById (ctx *gin.Context) {
+	params := ctx.Param("id");
+	ctx.Set("id", params);
+	result, err := c.todosService.GetTodoById(ctx.Request.Context())
+	if err != nil {
+		res := common.BuildErrorResponse("todo not found", err.Error(), common.EmptyObj{});
+		ctx.JSON(http.StatusNotFound, res);
+		return
+	}
+	ctx.JSON(http.StatusOK, common.BuildResponse(true, "Success", result));
+}
 
 func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 
