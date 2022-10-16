@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"fmt"
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"hacktiv8_fp_1/entity"
 	"io/ioutil"
 	"time"
@@ -43,6 +45,8 @@ func (db *todosConnection) GetTodos(ctx context.Context) (entity.Todos, error) {
 
 func (db *todosConnection) GetTodoById(ctx context.Context) (entity.Todos, error) {
 	id := ctx.Value("id");
+
+	fmt.Println("ini id --> ", id);
 	data, err := ioutil.ReadFile("./db/db.json")
 
 	var todos []entity.Todos
