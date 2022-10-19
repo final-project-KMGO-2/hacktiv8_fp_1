@@ -1,9 +1,10 @@
 package controller
 
 import (
+	"fmt"
 	"hacktiv8_fp_1/common"
-	"hacktiv8_fp_1/entity"
-	"hacktiv8_fp_1/helpers"
+	// "hacktiv8_fp_1/entity"
+	// "hacktiv8_fp_1/helpers"
 	"hacktiv8_fp_1/service"
 	"net/http"
 
@@ -52,6 +53,7 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 
 func (c *todosController) GetTodoById (ctx *gin.Context) {
 	params := ctx.Param("id");
+	
 	ctx.Set("id", params);
 	result, err := c.todosService.GetTodoById(ctx.Request.Context())
 	if err != nil {
@@ -63,14 +65,15 @@ func (c *todosController) GetTodoById (ctx *gin.Context) {
 }
 
 func (c *todosController) CreateNewTodo(ctx *gin.Context) {
-
-	contentType := helpers.GetContentType(ctx)
-	todo := entity.Todos{}
-	if contentType == appJson {
-		ctx.ShouldBindJSON(&todo)
-	} else {
-		ctx.ShouldBind(&todo)
-	}
+	credential := ctx.MustGet("credential")
+	fmt.Println(credential);
+	// contentType := helpers.GetContentType(ctx)
+	// todo := entity.Todos{}
+	// if contentType == appJson {
+	// 	ctx.ShouldBindJSON(&todo)
+	// } else {
+	// 	ctx.ShouldBind(&todo)
+	// }
 
 	result, err := c.todosService.CreateTodo(ctx.Request.Context()) // testing aja ini
 	if err != nil {
