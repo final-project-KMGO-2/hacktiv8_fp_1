@@ -10,6 +10,7 @@ import (
 type TodosService interface {
 	GetTodos(ctx context.Context) (entity.Todos, error)
 	GetTodoById(ctx context.Context) (entity.Todos, error)
+	// DeleteTodoByID(ctx context.Context) (entity.Todos, error)
 	CreateTodo(ctx context.Context) (entity.Todos, error)
 }
 
@@ -41,9 +42,8 @@ func (s *todosService) GetTodoById(ctx context.Context) (entity.Todos, error) {
 	return todo, nil
 }
 
-
 func (s *todosService) CreateTodo(ctx context.Context) (entity.Todos, error) {
-	todo, err := s.todosRepository.AddNewTodoToJson(ctx);
+	todo, err := s.todosRepository.AddNewTodoToJson(ctx)
 	if err != nil {
 		return entity.Todos{}, err
 	}

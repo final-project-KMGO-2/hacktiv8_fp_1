@@ -43,14 +43,14 @@ func (db *todosConnection) GetTodos(ctx context.Context) (entity.Todos, error) {
 }
 
 func (db *todosConnection) GetTodoById(ctx context.Context) (entity.Todos, error) {
-	id := ctx.Value("id");
+	id := ctx.Value("id")
 
-	fmt.Println("ini id --> ", id);
+	fmt.Println("ini id --> ", id)
 	data, err := ioutil.ReadFile("./db/db.json")
 
 	var todos []entity.Todos
 
-	err = json.Unmarshal(data, &todos);
+	err = json.Unmarshal(data, &todos)
 
 	if err != nil {
 		return entity.Todos{}, err
@@ -61,7 +61,7 @@ func (db *todosConnection) GetTodoById(ctx context.Context) (entity.Todos, error
 			return todo, nil
 		}
 	}
-	return entity.Todos{}, errors.New("data not found");
+	return entity.Todos{}, errors.New("data not found")
 }
 
 func (db *todosConnection) AddNewTodoToJson(ctx context.Context) (entity.Todos, error) {

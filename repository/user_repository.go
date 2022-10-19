@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"hacktiv8_fp_1/common"
 	"hacktiv8_fp_1/entity"
 	"io/ioutil"
 	"log"
@@ -31,20 +32,27 @@ func (db *userConnection) InsertUser(ctx context.Context, user entity.User) (ent
 	if err != nil {
 		return entity.User{}, err
 	}
-
 	var fileContents []entity.User
 	err = json.Unmarshal(byte, &fileContents)
 	if err != nil {
 		return entity.User{}, err
 	}
-
+	user.Password, err = common.HashAndSalt(user.Password)
+	if err != nil {
+		log.Println(err.Error())
+	}
 	// append new user to existing list of users
 	fileContents = append(fileContents, user)
+	byte, err = json.Marshal(fileContents)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
 	err = ioutil.WriteFile(db.filepath, byte, 0777)
 	if err != nil {
 		return entity.User{}, err
 	}
-
+	fmt.Println(db.filepath)
 	return user, nil
 }
 
@@ -59,7 +67,6 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 	if err != nil {
 		return entity.User{}, err
 	}
-	fmt.Println(fileContents);
 
 	// sort slice for efficiency in searching
 	sort.Slice(fileContents, func(i, j int) bool {
@@ -82,8 +89,8 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 	}
 
 	// return data if exists
-	if !(idx > len(fileContents)) && fileContents[idx].Email == email {
-		return fileContents[idx], nil
+	if fileContents[idx-1].Email == email {
+		return fileContents[idx-1], nil
 	}
 
 	return entity.User{}, errors.New("data not found")
