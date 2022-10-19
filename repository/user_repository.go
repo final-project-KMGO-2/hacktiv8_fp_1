@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"hacktiv8_fp_1/entity"
 	"io/ioutil"
 	"log"
@@ -58,6 +59,7 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 	if err != nil {
 		return entity.User{}, err
 	}
+	fmt.Println(fileContents);
 
 	// sort slice for efficiency in searching
 	sort.Slice(fileContents, func(i, j int) bool {

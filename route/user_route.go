@@ -6,10 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func UserRoute(router *gin.Engine, todosController controller.TodosController) {
+func UserRoute(router *gin.Engine, authController controller.AuthController) {
 	todosRoutes := router.Group("/auth")
 	{
-		todosRoutes.POST("/sign-up", )
-		todosRoutes.POST("/sign-in", )
+		todosRoutes.POST("/sign-up", authController.Register)
+		todosRoutes.POST("/sign-in", authController.Login)
 	}
 }
