@@ -10,6 +10,7 @@ import (
 type TodosService interface {
 	GetTodos(ctx context.Context) (entity.Todos, error)
 	GetTodoById(ctx context.Context) (entity.Todos, error)
+	DeleteTodoByID(ctx context.Context) (entity.Todos, error)
 	CreateTodo(ctx context.Context) (entity.Todos, error)
 }
 
