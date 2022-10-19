@@ -13,5 +13,8 @@ func TodosRoute(router *gin.Engine, todosController controller.TodosController, 
 	{
 		todosRoutes.GET("", todosController.GetTodos)
 		todosRoutes.POST("", todosController.CreateNewTodo)
+		todosRoutes.GET("/:id", todosController.GetTodoById)
+		todosRoutes.PUT("/:id", todosController.UpdateTodo)
+		todosRoutes.DELETE("/:id", todosController.DeleteTodo)
 	}
 }

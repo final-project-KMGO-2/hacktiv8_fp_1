@@ -7,13 +7,17 @@ import (
 	"fmt"
 	"hacktiv8_fp_1/entity"
 	"io/ioutil"
-	"time"
+	"log"
+	"sort"
+	"strconv"
 )
 
 type TodosRepository interface {
-	GetTodos(ctx context.Context) (entity.Todos, error)
-	GetTodoById(ctx context.Context) (entity.Todos, error)
-	AddNewTodoToJson(ctx context.Context) (entity.Todos, error)
+	GetTodos(ctx context.Context) ([]entity.Todos, error)
+	GetTodoById(ctx context.Context, id string) (entity.Todos, error)
+	AddNewTodoToJson(ctx context.Context, todo entity.Todos) (entity.Todos, error)
+	UpdateTodo(ctx context.Context, todo entity.Todos) (entity.Todos, error)
+	DeleteTodo(ctx context.Context, id string) error
 }
 
 type todosConnection struct {
@@ -26,80 +30,181 @@ func NewTodosRepository(fp string) TodosRepository {
 	}
 }
 
-func (db *todosConnection) GetTodos(ctx context.Context) (entity.Todos, error) {
-	test := entity.Todos{
-		ID:          1,
-		Name:        "test",
-		Description: "test",
-		Status:      true,
-		Deadline:    time.Now(),
-		BaseTimestamp: entity.BaseTimestamp{
-			CreatedAt: time.Now(),
-			UpdatedAt: time.Now(),
-			DeletedAt: time.Now(),
-		},
+func (db *todosConnection) GetTodos(ctx context.Context) ([]entity.Todos, error) {
+	byte, err := ioutil.ReadFile(db.filepath)
+	if err != nil {
+		return nil, err
 	}
-	return test, nil
+	var fileContents []entity.Todos
+	err = json.Unmarshal(byte, &fileContents)
+	if err != nil {
+		return nil, err
+	}
+	return fileContents, nil
 }
 
-func (db *todosConnection) GetTodoById(ctx context.Context) (entity.Todos, error) {
-	id := ctx.Value("id")
+func (db *todosConnection) GetTodoById(ctx context.Context, id string) (entity.Todos, error) {
 
-	fmt.Println("ini id --> ", id)
-	data, err := ioutil.ReadFile("./db/db.json")
-
-	var todos []entity.Todos
-
-	err = json.Unmarshal(data, &todos)
-
+	uintId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return entity.Todos{}, err
+	}
+	byte, err := ioutil.ReadFile(db.filepath)
 	if err != nil {
 		return entity.Todos{}, err
 	}
 
-	for _, todo := range todos {
-		if todo.ID == id {
-			return todo, nil
-		}
+	var fileContents []entity.Todos
+	err = json.Unmarshal(byte, &fileContents)
+	if err != nil {
+		return entity.Todos{}, err
 	}
+
+	// sort slice for efficiency in searching
+	sort.Slice(fileContents, func(i, j int) bool {
+		return fileContents[i].ID <= fileContents[j].ID
+	})
+
+	// binary search to search email
+	idx := sort.Search(len(fileContents), func(i int) bool {
+		return fileContents[i].ID >= uintId
+	})
+
+	// insert to previous file to ease next searches
+	byte, err = json.Marshal(fileContents)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	err = ioutil.WriteFile(db.filepath, byte, 0777)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	// return data if exists
+	if (idx < len(fileContents)) && fileContents[idx].ID == uintId {
+		return fileContents[idx], nil
+	}
+
 	return entity.Todos{}, errors.New("data not found")
 }
 
-func (db *todosConnection) AddNewTodoToJson(ctx context.Context) (entity.Todos, error) {
-	// data, err := ioutil.ReadFile("./db/<file>.json")
+func (db *todosConnection) AddNewTodoToJson(ctx context.Context, todo entity.Todos) (entity.Todos, error) {
 
-	// if err != nil {
-	// 	return entity.Todos{}, err
-	// }
-
-	dataMock := []entity.Todos{
-		{
-			ID:          69,
-			Name:        "tess",
-			Description: "lorem ipsum dolor sit amet maman racing",
-			Status:      true,
-			Deadline:    time.Now(),
-			BaseTimestamp: entity.BaseTimestamp{
-				CreatedAt: time.Now(),
-				UpdatedAt: time.Now(),
-				DeletedAt: time.Now(),
-			},
-		},
-	}
-	data, err := json.Marshal(dataMock)
-
+	byte, err := ioutil.ReadFile(db.filepath)
 	if err != nil {
 		return entity.Todos{}, err
 	}
 
-	ioutil.WriteFile("./db/db.json", data, 0644)
-
-	var todo []entity.Todos
-	err = json.Unmarshal(data, &todo)
-
+	var fileContents []entity.Todos
+	err = json.Unmarshal(byte, &fileContents)
 	if err != nil {
 		return entity.Todos{}, err
 	}
 
-	return todo[0], nil
+	if err != nil {
+		log.Println(err.Error())
+	}
 
+	// append new user to existing list of users
+	fileContents = append(fileContents, todo)
+	byte, err = json.Marshal(fileContents)
+	if err != nil {
+		log.Println(err.Error())
+	}
+
+	err = ioutil.WriteFile(db.filepath, byte, 0777)
+	if err != nil {
+		return entity.Todos{}, err
+	}
+
+	return todo, nil
+
+}
+
+func (db *todosConnection) UpdateTodo(ctx context.Context, todo entity.Todos) (entity.Todos, error) {
+
+	byte, err := ioutil.ReadFile(db.filepath)
+	if err != nil {
+		return entity.Todos{}, err
+	}
+
+	var fileContents []entity.Todos
+	err = json.Unmarshal(byte, &fileContents)
+	if err != nil {
+		return entity.Todos{}, err
+	}
+
+	// sort slice for efficiency in searching
+	sort.Slice(fileContents, func(i, j int) bool {
+		return fileContents[i].ID <= fileContents[j].ID
+	})
+
+	// binary search to search id
+	idx := sort.Search(len(fileContents), func(i int) bool {
+		return fileContents[i].ID >= todo.ID
+	})
+
+	// update data if exists
+	if (idx < len(fileContents)) && fileContents[idx].ID == todo.ID {
+		fileContents[idx] = todo
+
+		byte, err = json.Marshal(fileContents)
+		if err != nil {
+			log.Println(err.Error())
+		}
+		err = ioutil.WriteFile(db.filepath, byte, 0777)
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		return todo, nil
+	}
+
+	return entity.Todos{}, errors.New("data not found")
+}
+
+func (db *todosConnection) DeleteTodo(ctx context.Context, id string) error {
+	uintId, err := strconv.ParseUint(id, 10, 64)
+	if err != nil {
+		return err
+	}
+	byte, err := ioutil.ReadFile(db.filepath)
+	if err != nil {
+		return err
+	}
+
+	var fileContents []entity.Todos
+	err = json.Unmarshal(byte, &fileContents)
+	if err != nil {
+		return err
+	}
+
+	// sort slice for efficiency in searching
+	sort.Slice(fileContents, func(i, j int) bool {
+		return fileContents[i].ID <= fileContents[j].ID
+	})
+
+	// binary search to search email
+	idx := sort.Search(len(fileContents), func(i int) bool {
+		return fileContents[i].ID >= uintId
+	})
+
+	fmt.Println("idx : ", idx)
+	// delete data if exists
+	if (idx < len(fileContents)) && fileContents[idx].ID == uintId {
+		fileContents[idx] = fileContents[len(fileContents)-1]
+
+		byte, err = json.Marshal(fileContents[:len(fileContents)-1])
+		if err != nil {
+			log.Println(err.Error())
+		}
+		err = ioutil.WriteFile(db.filepath, byte, 0777)
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		return nil
+	}
+
+	return errors.New("data not found")
 }

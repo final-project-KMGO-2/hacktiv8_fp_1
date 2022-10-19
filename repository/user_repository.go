@@ -37,6 +37,7 @@ func (db *userConnection) InsertUser(ctx context.Context, user entity.User) (ent
 	if err != nil {
 		return entity.User{}, err
 	}
+
 	user.Password, err = common.HashAndSalt(user.Password)
 	if err != nil {
 		log.Println(err.Error())
@@ -75,7 +76,7 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 
 	// binary search to search email
 	idx := sort.Search(len(fileContents), func(i int) bool {
-		return string(fileContents[i].Email) == email
+		return string(fileContents[i].Email) >= email
 	})
 
 	// insert to previous file to ease next searches
@@ -89,8 +90,8 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 	}
 
 	// return data if exists
-	if fileContents[idx-1].Email == email {
-		return fileContents[idx-1], nil
+	if fileContents[idx].Email == email {
+		return fileContents[idx], nil
 	}
 
 	return entity.User{}, errors.New("data not found")

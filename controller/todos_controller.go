@@ -3,6 +3,8 @@ package controller
 import (
 	"fmt"
 	"hacktiv8_fp_1/common"
+	"hacktiv8_fp_1/dto"
+
 	// "hacktiv8_fp_1/entity"
 	// "hacktiv8_fp_1/helpers"
 	"hacktiv8_fp_1/service"
@@ -11,13 +13,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	appJson = "application/json"
-)
-
 type TodosController interface {
 	GetTodos(ctx *gin.Context)
+	GetTodoById(ctx *gin.Context)
 	CreateNewTodo(ctx *gin.Context)
+	UpdateTodo(ctx *gin.Context)
+	DeleteTodo(ctx *gin.Context)
 }
 
 type todosController struct {
@@ -51,35 +52,70 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
-func (c *todosController) GetTodoById (ctx *gin.Context) {
-	params := ctx.Param("id");
-	
-	ctx.Set("id", params);
-	result, err := c.todosService.GetTodoById(ctx.Request.Context())
+func (c *todosController) GetTodoById(ctx *gin.Context) {
+	id := ctx.Param("id")
+	result, err := c.todosService.GetTodoById(ctx.Request.Context(), id)
 	if err != nil {
-		res := common.BuildErrorResponse("todo not found", err.Error(), common.EmptyObj{});
-		ctx.JSON(http.StatusNotFound, res);
+		res := common.BuildErrorResponse("todo not found", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusNotFound, res)
 		return
 	}
-	ctx.JSON(http.StatusOK, common.BuildResponse(true, "Success", result));
+	ctx.JSON(http.StatusOK, common.BuildResponse(true, "Success", result))
 }
 
 func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 	credential := ctx.MustGet("credential")
-	fmt.Println(credential);
-	// contentType := helpers.GetContentType(ctx)
-	// todo := entity.Todos{}
-	// if contentType == appJson {
-	// 	ctx.ShouldBindJSON(&todo)
-	// } else {
-	// 	ctx.ShouldBind(&todo)
-	// }
+	fmt.Println(credential)
 
-	result, err := c.todosService.CreateTodo(ctx.Request.Context()) // testing aja ini
+	var todosDTO dto.TodosCreateDTO
+	errDTO := ctx.ShouldBind(&todosDTO)
+	if errDTO != nil {
+		response := common.BuildErrorResponse("Failed to process request", errDTO.Error(), common.EmptyObj{})
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, response)
+		return
+	}
+
+	result, err := c.todosService.CreateTodo(ctx.Request.Context(), todosDTO) // testing aja ini
 	if err != nil {
 		res := common.BuildErrorResponse("Bad create request", err.Error(), common.EmptyObj{})
 		ctx.JSON(http.StatusBadRequest, res)
 		return
 	}
 	ctx.JSON(http.StatusCreated, common.BuildResponse(true, "Success", result))
+}
+
+func (c *todosController) UpdateTodo(ctx *gin.Context) {
+	var todoDTO dto.TodosUpdateDTO
+
+	if err := ctx.ShouldBind(&todoDTO); err != nil {
+		res := common.BuildErrorResponse("Failed to bind todos request", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	id := ctx.Param("id")
+
+	result, err := c.todosService.UpdateTodo(ctx.Request.Context(), id, todoDTO)
+
+	if err != nil {
+		res := common.BuildErrorResponse("Failed to update todos", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := common.BuildResponse(true, "OK", result)
+	ctx.JSON(http.StatusOK, res)
+}
+
+func (c *todosController) DeleteTodo(ctx *gin.Context) {
+	id := ctx.Param("id")
+	err := c.todosService.DeleteTodoByID(ctx.Request.Context(), id)
+	if err != nil {
+		res := common.BuildErrorResponse("Failed to delete todos", err.Error(), common.EmptyObj{})
+		ctx.JSON(http.StatusBadRequest, res)
+		return
+	}
+
+	res := common.BuildResponse(true, "OK", common.EmptyObj{})
+	ctx.JSON(http.StatusOK, res)
 }

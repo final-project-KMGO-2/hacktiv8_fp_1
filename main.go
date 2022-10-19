@@ -4,9 +4,7 @@ import (
 	"hacktiv8_fp_1/controller"
 	"hacktiv8_fp_1/repository"
 	"hacktiv8_fp_1/route"
-	"hacktiv8_fp_1/seeders"
 	"hacktiv8_fp_1/service"
-	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -25,10 +23,10 @@ func main() {
 	)
 	server := gin.Default()
 
-	err := seeders.SeedUser()
-	if err != nil {
-		log.Fatal(err);
-	}
+	// err := seeders.SeedUser()
+	// if err != nil {
+	// 	log.Fatal(err);
+	// }
 
 	route.SwaggerRoute(server)
 	route.TodosRoute(server, todosController, jwtService)
