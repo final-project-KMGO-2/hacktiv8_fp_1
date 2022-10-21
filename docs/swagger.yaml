@@ -1,5 +1,17 @@
+basePath: /
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server todo server. You can visit the GitHub repository
+    at https://github.com/LordGhostX/swag-gin-demo
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: Go + Gin Todo API
+  version: "1.0"
 paths:
   /todos:
     get:
@@ -16,4 +28,45 @@ paths:
       summary: Gets all todos
       tags:
       - todos
+  /todos/{id}:
+    delete:
+      operationId: delete-todo-by-id
+      parameters:
+      - description: todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: Todos
+        "404":
+          description: Not Found
+          schema:
+            type: Response
+      summary: delete a todo item by ID
+    get:
+      operationId: get-todo-by-id
+      parameters:
+      - description: todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: Todos
+        "404":
+          description: Not Found
+          schema:
+            type: Response
+      summary: get a todo item by ID
 swagger: "2.0"

@@ -52,6 +52,13 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary get a todo item by ID
+// @ID get-todo-by-id
+// @Produce json
+// @Param id path string true "todo ID"
+// @Success 200 {Todos} todos
+// @Failure 404 {Response} message
+// @Router /todos/{id} [get]
 func (c *todosController) GetTodoById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	result, err := c.todosService.GetTodoById(ctx.Request.Context(), id)
@@ -62,6 +69,7 @@ func (c *todosController) GetTodoById(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, common.BuildResponse(true, "Success", result))
 }
+
 
 func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 	credential := ctx.MustGet("credential")
@@ -83,6 +91,7 @@ func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusCreated, common.BuildResponse(true, "Success", result))
 }
+
 
 func (c *todosController) UpdateTodo(ctx *gin.Context) {
 	var todoDTO dto.TodosUpdateDTO
@@ -107,6 +116,13 @@ func (c *todosController) UpdateTodo(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, res)
 }
 
+// @Summary delete a todo item by ID
+// @ID delete-todo-by-id
+// @Produce json
+// @Param id path string true "todo ID"
+// @Success 200 {Todos} todos
+// @Failure 404 {Response} message
+// @Router /todos/{id} [delete]
 func (c *todosController) DeleteTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := c.todosService.DeleteTodoByID(ctx.Request.Context(), id)
