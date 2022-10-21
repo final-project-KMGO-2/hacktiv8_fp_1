@@ -92,7 +92,13 @@ func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, common.BuildResponse(true, "Success", result))
 }
 
-
+// @Summary update a todo item by ID
+// @ID update-todo-by-id
+// @Produce json
+// @Param id path string true "todo ID"
+// @Success 200 {Todos} todos
+// @Failure 404 {Response} message
+// @Router /todos/{id} [update]
 func (c *todosController) UpdateTodo(ctx *gin.Context) {
 	var todoDTO dto.TodosUpdateDTO
 
