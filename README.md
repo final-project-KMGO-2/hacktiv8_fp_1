@@ -29,6 +29,7 @@ Pada pengerjaan final project ini, dilakukan pembagian tugas sebagai berikut :
     - Membuat endpoint post todos
     - Membuat endpoint get todos by id
     - Membuat middleware auth
+    - Melakukan deployment ke heroku
 - Alexander
     - Membuat boilerplate project
     - Melakukan setup Swaggo
