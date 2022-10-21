@@ -79,7 +79,7 @@ definitions:
       updatedAt:
         type: string
     type: object
-host: localhost:8080
+host: https://todo-list-fph8.herokuapp.com
 info:
   contact:
     email: support@swagger.io
@@ -116,11 +116,11 @@ paths:
       summary: sign-in/login
   /auth/sign-up:
     post:
-      operationId: sign-up
+      operationId: create-user
       parameters:
-      - description: ID, name, email, and password
+      - description: user data
         in: body
-        name: information
+        name: data
         required: true
         schema:
           $ref: '#/definitions/dto.UserRegisterDTO'
@@ -131,11 +131,11 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/common.Response'
-        "404":
-          description: Not Found
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/common.Response'
-      summary: sign-up/register
+      summary: register user baru
   /todos:
     get:
       operationId: get-todos
@@ -256,10 +256,10 @@ paths:
         "200":
           description: OK
           schema:
-            type: Todos
+            $ref: '#/definitions/entity.Todos'
         "404":
           description: Not Found
           schema:
-            type: Response
+            $ref: '#/definitions/common.Response'
       summary: update a todo item by ID
 swagger: "2.0"

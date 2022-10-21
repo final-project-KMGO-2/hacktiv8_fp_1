@@ -63,12 +63,12 @@ const docTemplate = `{
                 "produces": [
                     "application/json"
                 ],
-                "summary": "sign-up/register",
-                "operationId": "sign-up",
+                "summary": "register user baru",
+                "operationId": "create-user",
                 "parameters": [
                     {
-                        "description": "ID, name, email, and password",
-                        "name": "information",
+                        "description": "user data",
+                        "name": "data",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -83,8 +83,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/common.Response"
                         }
                     },
-                    "404": {
-                        "description": "Not Found",
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/common.Response"
                         }
@@ -232,13 +232,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "Todos"
+                            "$ref": "#/definitions/entity.Todos"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "Response"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -409,7 +409,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:8080",
+	Host:             "https://todo-list-fph8.herokuapp.com",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Go + Gin Todo API",

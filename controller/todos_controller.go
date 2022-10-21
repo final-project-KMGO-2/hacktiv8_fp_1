@@ -105,8 +105,8 @@ func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 // @Produce json
 // @param Authorization header string true "Authorization"
 // @Param information body dto.TodosUpdateDTO true "todos information"
-// @Success 200 {Todos} entity.Todos
-// @Failure 404 {Response} common.Response
+// @Success 200 {object} entity.Todos
+// @Failure 404 {object} common.Response
 // @Router /todos/{id} [PUT]
 func (c *todosController) UpdateTodo(ctx *gin.Context) {
 	var todoDTO dto.TodosUpdateDTO
