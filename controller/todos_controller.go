@@ -38,7 +38,7 @@ func NewTodosController(ts service.TodosService) TodosController {
 // @Tags todos
 // @Accept json
 // @Produce json
-// @Success 200 {Todos} todos
+// @Success 200 {array} entity.Todos
 // @Router /todos [get]
 func (c *todosController) GetTodos(ctx *gin.Context) {
 	result, err := c.todosService.GetTodos(ctx.Request.Context())
@@ -56,8 +56,8 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 // @ID get-todo-by-id
 // @Produce json
 // @Param id path string true "todo ID"
-// @Success 200 {Todos} todos
-// @Failure 404 {Response} message
+// @Success 200 {object} entity.Todos
+// @Failure 404 {object} common.Response
 // @Router /todos/{id} [get]
 func (c *todosController) GetTodoById(ctx *gin.Context) {
 	id := ctx.Param("id")
@@ -126,8 +126,8 @@ func (c *todosController) UpdateTodo(ctx *gin.Context) {
 // @ID delete-todo-by-id
 // @Produce json
 // @Param id path string true "todo ID"
-// @Success 200 {Todos} todos
-// @Failure 404 {Response} message
+// @Success 200 {object} entity.Todos
+// @Failure 404 {object} common.Response
 // @Router /todos/{id} [delete]
 func (c *todosController) DeleteTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
