@@ -43,21 +43,99 @@ info:
   title: Go + Gin Todo API
   version: "1.0"
 paths:
-  /todos:
-    get:
-      consumes:
-      - application/json
-      description: Gets all todos
+  /auth/sign-in:
+    post:
+      operationId: sign-in
+      parameters:
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: path
+        name: password
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: Todos
-      summary: Gets all todos
-      tags:
-      - todos
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: sign-in/login
+  /auth/sign-up:
+    post:
+      operationId: sign-up
+      parameters:
+      - description: user ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: name
+        in: path
+        name: name
+        required: true
+        type: string
+      - description: email
+        in: path
+        name: email
+        required: true
+        type: string
+      - description: password
+        in: path
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: sign-up/register
+  /todos:
+    get:
+      operationId: get-todos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Todos'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Gets all todo item
+    post:
+      operationId: create-todo
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todos'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Create a todo item
   /todos/{id}:
     delete:
       operationId: delete-todo-by-id
@@ -73,7 +151,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Todos'
+            $ref: '#/definitions/common.Response'
         "404":
           description: Not Found
           schema:
@@ -93,10 +171,30 @@ paths:
         "200":
           description: OK
           schema:
+            $ref: '#/definitions/entity.Todos'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: get a todo item by ID
+    put:
+      operationId: update-todo-by-id
+      parameters:
+      - description: todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
             type: Todos
         "404":
           description: Not Found
           schema:
             type: Response
-      summary: get a todo item by ID
+      summary: update a todo item by ID
 swagger: "2.0"

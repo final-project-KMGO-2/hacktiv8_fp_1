@@ -29,6 +29,18 @@ func NewAuthController(us service.UserService, as service.AuthService, js servic
 	}
 }
 
+// @BasePath /auth
+
+// @Summary sign-up/register
+// @ID sign-up
+// @Param id path string true "user ID"
+// @Param name path string true "name"
+// @Param email path string true "email"
+// @Param password path string true "password"
+// @Produce json
+// @Success 200 {object} common.Response
+// @Failure 404 {object} common.Response
+// @Router /auth/sign-up [POST]
 func (c *authController) Register(ctx *gin.Context) {
 	var registerDTO dto.UserRegisterDTO
 	errDTO := ctx.ShouldBind(&registerDTO)
@@ -57,6 +69,14 @@ func (c *authController) Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
+// @Summary sign-in/login
+// @ID sign-in
+// @Produce json
+// @Param email path string true "email"
+// @Param password path string true "password"
+// @Success 200 {object} common.Response
+// @Failure 404 {object} common.Response
+// @Router /auth/sign-in [POST]
 func (c *authController) Login(ctx *gin.Context) {
 	var loginDTO dto.UserLoginDTO
 	if errDTO := ctx.ShouldBind(&loginDTO); errDTO != nil {
