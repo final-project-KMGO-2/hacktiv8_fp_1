@@ -33,10 +33,7 @@ func NewAuthController(us service.UserService, as service.AuthService, js servic
 
 // @Summary sign-up/register
 // @ID sign-up
-// @Param id path string true "user ID"
-// @Param name path string true "name"
-// @Param email path string true "email"
-// @Param password path string true "password"
+// @Param information body dto.UserRegisterDTO true "ID, name, email, and password"
 // @Produce json
 // @Success 200 {object} common.Response
 // @Failure 404 {object} common.Response
@@ -72,8 +69,7 @@ func (c *authController) Register(ctx *gin.Context) {
 // @Summary sign-in/login
 // @ID sign-in
 // @Produce json
-// @Param email path string true "email"
-// @Param password path string true "password"
+// @Param creds body dto.UserLoginDTO true "email and password sample :(alexd@gmail.com, admin)"
 // @Success 200 {object} common.Response
 // @Failure 404 {object} common.Response
 // @Router /auth/sign-in [POST]

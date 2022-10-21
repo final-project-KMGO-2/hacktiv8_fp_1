@@ -9,6 +9,55 @@ definitions:
       status:
         type: boolean
     type: object
+  dto.TodosCreateDTO:
+    properties:
+      category:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      is_complete:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.TodosUpdateDTO:
+    properties:
+      category:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      is_complete:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.UserLoginDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.UserRegisterDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   entity.Todos:
     properties:
       category:
@@ -47,16 +96,12 @@ paths:
     post:
       operationId: sign-in
       parameters:
-      - description: email
-        in: path
-        name: email
+      - description: email and password sample :(alexd@gmail.com, admin)
+        in: body
+        name: creds
         required: true
-        type: string
-      - description: password
-        in: path
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dto.UserLoginDTO'
       produces:
       - application/json
       responses:
@@ -73,26 +118,12 @@ paths:
     post:
       operationId: sign-up
       parameters:
-      - description: user ID
-        in: path
-        name: id
+      - description: ID, name, email, and password
+        in: body
+        name: information
         required: true
-        type: string
-      - description: name
-        in: path
-        name: name
-        required: true
-        type: string
-      - description: email
-        in: path
-        name: email
-        required: true
-        type: string
-      - description: password
-        in: path
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/dto.UserRegisterDTO'
       produces:
       - application/json
       responses:
@@ -108,6 +139,12 @@ paths:
   /todos:
     get:
       operationId: get-todos
+      parameters:
+      - description: 'Authorization (put '
+        in: header
+        name: Authorization
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -124,6 +161,18 @@ paths:
       summary: Gets all todo item
     post:
       operationId: create-todo
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todos information
+        in: body
+        name: information
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TodosCreateDTO'
       produces:
       - application/json
       responses:
@@ -140,6 +189,11 @@ paths:
     delete:
       operationId: delete-todo-by-id
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: todo ID
         in: path
         name: id
@@ -160,6 +214,11 @@ paths:
     get:
       operationId: get-todo-by-id
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: todo ID
         in: path
         name: id
@@ -180,11 +239,17 @@ paths:
     put:
       operationId: update-todo-by-id
       parameters:
-      - description: todo ID
-        in: path
-        name: id
+      - description: Authorization
+        in: header
+        name: Authorization
         required: true
         type: string
+      - description: todos information
+        in: body
+        name: information
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TodosUpdateDTO'
       produces:
       - application/json
       responses:
