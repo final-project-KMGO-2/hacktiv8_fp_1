@@ -64,14 +64,13 @@ func (c *authController) Register(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, response)
 }
 
-
-// @Summary login user
-// @ID login-user
+// @Summary sign-in/login
+// @ID sign-in
 // @Produce json
-// @Param data body dto.UserLoginDTO true "user data"
+// @Param creds body dto.UserLoginDTO true "email and password sample :(alexd@gmail.com, admin)"
 // @Success 200 {object} common.Response
-// @Failure 400 {object} common.Response
-// @Router /auth/sign-in [post]
+// @Failure 404 {object} common.Response
+// @Router /auth/sign-in [POST]
 func (c *authController) Login(ctx *gin.Context) {
 	var loginDTO dto.UserLoginDTO
 	if errDTO := ctx.ShouldBind(&loginDTO); errDTO != nil {

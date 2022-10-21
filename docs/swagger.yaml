@@ -9,6 +9,55 @@ definitions:
       status:
         type: boolean
     type: object
+  dto.TodosCreateDTO:
+    properties:
+      category:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      is_complete:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.TodosUpdateDTO:
+    properties:
+      category:
+        type: string
+      deadline:
+        type: string
+      description:
+        type: string
+      is_complete:
+        type: boolean
+      title:
+        type: string
+    type: object
+  dto.UserLoginDTO:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  dto.UserRegisterDTO:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+    type: object
   entity.Todos:
     properties:
       category:
@@ -43,25 +92,133 @@ info:
   title: Go + Gin Todo API
   version: "1.0"
 paths:
-  /todos:
-    get:
-      consumes:
-      - application/json
-      description: Gets all todos
+  /auth/sign-in:
+    post:
+      operationId: sign-in
+      parameters:
+      - description: email and password sample :(alexd@gmail.com, admin)
+        in: body
+        name: creds
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserLoginDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: Todos
-      summary: Gets all todos
-      tags:
-      - todos
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: sign-in/login
+  /auth/sign-up:
+    post:
+      operationId: sign-up
+      parameters:
+      - description: ID, name, email, and password
+        in: body
+        name: information
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UserRegisterDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: sign-up/register
+  /todos:
+    get:
+      operationId: get-todos
+      parameters:
+      - description: 'Authorization (put '
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Todos'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Gets all todo item
+    post:
+      operationId: create-todo
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todos information
+        in: body
+        name: information
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TodosCreateDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Todos'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Create a todo item
   /todos/{id}:
     delete:
       operationId: delete-todo-by-id
       parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: todo ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: delete a todo item by ID
+    get:
+      operationId: get-todo-by-id
+      parameters:
+      - description: Authorization
+        in: header
+        name: Authorization
+        required: true
+        type: string
       - description: todo ID
         in: path
         name: id
@@ -78,15 +235,21 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/common.Response'
-      summary: delete a todo item by ID
-    get:
-      operationId: get-todo-by-id
+      summary: get a todo item by ID
+    put:
+      operationId: update-todo-by-id
       parameters:
-      - description: todo ID
-        in: path
-        name: id
+      - description: Authorization
+        in: header
+        name: Authorization
         required: true
         type: string
+      - description: todos information
+        in: body
+        name: information
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TodosUpdateDTO'
       produces:
       - application/json
       responses:
@@ -98,5 +261,5 @@ paths:
           description: Not Found
           schema:
             type: Response
-      summary: get a todo item by ID
+      summary: update a todo item by ID
 swagger: "2.0"

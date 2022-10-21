@@ -33,13 +33,13 @@ func NewTodosController(ts service.TodosService) TodosController {
 
 // @BasePath /todos
 
-// @Summary Gets all todos
-// @Description Gets all todos
-// @Tags todos
-// @Accept json
+// @Summary Gets all todo item
+// @ID get-todos
 // @Produce json
-// @Success 200 {array} entity.Todos
-// @Router /todos [get]
+// @param Authorization header string true "Authorization (put "Bearer " in front of auth key from sign-in route)"
+// @Success 200 {object} []entity.Todos
+// @Failure 404 {object} common.Response
+// @Router /todos [GET]
 func (c *todosController) GetTodos(ctx *gin.Context) {
 	result, err := c.todosService.GetTodos(ctx.Request.Context())
 	if err != nil {
@@ -55,10 +55,11 @@ func (c *todosController) GetTodos(ctx *gin.Context) {
 // @Summary get a todo item by ID
 // @ID get-todo-by-id
 // @Produce json
+// @param Authorization header string true "Authorization"
 // @Param id path string true "todo ID"
 // @Success 200 {object} entity.Todos
 // @Failure 404 {object} common.Response
-// @Router /todos/{id} [get]
+// @Router /todos/{id} [GET]
 func (c *todosController) GetTodoById(ctx *gin.Context) {
 	id := ctx.Param("id")
 	result, err := c.todosService.GetTodoById(ctx.Request.Context(), id)
@@ -70,7 +71,14 @@ func (c *todosController) GetTodoById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, common.BuildResponse(true, "Success", result))
 }
 
-
+// @Summary Create a todo item
+// @ID create-todo
+// @Produce json
+// @param Authorization header string true "Authorization"
+// @Param information body dto.TodosCreateDTO true "todos information"
+// @Success 200 {object} entity.Todos
+// @Failure 404 {object} common.Response
+// @Router /todos [POST]
 func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 	credential := ctx.MustGet("credential")
 	fmt.Println(credential)
@@ -95,10 +103,11 @@ func (c *todosController) CreateNewTodo(ctx *gin.Context) {
 // @Summary update a todo item by ID
 // @ID update-todo-by-id
 // @Produce json
-// @Param id path string true "todo ID"
-// @Success 200 {Todos} todos
-// @Failure 404 {Response} message
-// @Router /todos/{id} [update]
+// @param Authorization header string true "Authorization"
+// @Param information body dto.TodosUpdateDTO true "todos information"
+// @Success 200 {Todos} entity.Todos
+// @Failure 404 {Response} common.Response
+// @Router /todos/{id} [PUT]
 func (c *todosController) UpdateTodo(ctx *gin.Context) {
 	var todoDTO dto.TodosUpdateDTO
 
@@ -125,10 +134,11 @@ func (c *todosController) UpdateTodo(ctx *gin.Context) {
 // @Summary delete a todo item by ID
 // @ID delete-todo-by-id
 // @Produce json
+// @param Authorization header string true "Authorization"
 // @Param id path string true "todo ID"
-// @Success 200 {object} entity.Todos
+// @Success 200 {object} common.Response
 // @Failure 404 {object} common.Response
-// @Router /todos/{id} [delete]
+// @Router /todos/{id} [DELETE]
 func (c *todosController) DeleteTodo(ctx *gin.Context) {
 	id := ctx.Param("id")
 	err := c.todosService.DeleteTodoByID(ctx.Request.Context(), id)
