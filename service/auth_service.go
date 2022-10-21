@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"hacktiv8_fp_1/common"
 	"hacktiv8_fp_1/repository"
 )
@@ -27,9 +26,7 @@ func (s *authService) VerifyCredential(ctx context.Context, email string, passwo
 	if err != nil {
 		return false, err
 	}
-	fmt.Println("user pass :", res.Password, password)
 	comparedPassword, err := common.ComparePassword(res.Password, []byte(password))
-	fmt.Println("tes :", comparedPassword, err)
 	if err != nil {
 		return false, err
 	}
