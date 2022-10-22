@@ -79,16 +79,10 @@ definitions:
       updatedAt:
         type: string
     type: object
-host: https://todo-list-fph8.herokuapp.com
+host: todo-list-fph8.herokuapp.com
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
+  contact: {}
   description: Projek todo list untuk final projek pertama
-  license:
-    name: MIT
-    url: https://opensource.org/licenses/MIT
   title: Go + Gin Todo API
   version: "1.0"
 paths:
@@ -262,4 +256,7 @@ paths:
           schema:
             $ref: '#/definitions/common.Response'
       summary: update a todo item by ID
+schemes:
+- http
+- https
 swagger: "2.0"

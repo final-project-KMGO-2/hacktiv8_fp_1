@@ -1,20 +1,16 @@
 {
+    "schemes": [
+        "http",
+        "https"
+    ],
     "swagger": "2.0",
     "info": {
         "description": "Projek todo list untuk final projek pertama",
         "title": "Go + Gin Todo API",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "MIT",
-            "url": "https://opensource.org/licenses/MIT"
-        },
+        "contact": {},
         "version": "1.0"
     },
-    "host": "https://todo-list-fph8.herokuapp.com",
+    "host": "todo-list-fph8.herokuapp.com",
     "basePath": "/",
     "paths": {
         "/auth/sign-in": {
