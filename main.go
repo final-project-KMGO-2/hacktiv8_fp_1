@@ -7,13 +7,13 @@ import (
 	"hacktiv8_fp_1/service"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
-
 // @title Go + Gin Todo API
 // @version 1.0
-// @description Projek todo list untuk final projek pertama 
+// @description Projek todo list untuk final projek pertama
 
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support
@@ -44,7 +44,7 @@ func main() {
 	// if err != nil {
 	// 	log.Fatal(err);
 	// }
-
+	server.Use(cors.Default())
 	route.SwaggerRoute(server)
 	route.TodosRoute(server, todosController, jwtService)
 	route.UserRoute(server, authController)
