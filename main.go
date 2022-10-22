@@ -23,7 +23,7 @@ import (
 // @license.url https://opensource.org/licenses/MIT
 
 // @host localhost:8080
-// @host https://todo-list-fph8.herokuapp.com
+// @host todo-list-fph8.herokuapp.com
 // @BasePath /
 // @query.collection.format multi
 
