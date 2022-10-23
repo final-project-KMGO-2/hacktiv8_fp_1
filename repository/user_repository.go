@@ -90,7 +90,7 @@ func (db *userConnection) GetUserByEmail(ctx context.Context, email string) (ent
 	}
 
 	// return data if exists
-	if fileContents[idx].Email == email {
+	if (idx < len(fileContents)) && fileContents[idx].Email == email {
 		return fileContents[idx], nil
 	}
 
