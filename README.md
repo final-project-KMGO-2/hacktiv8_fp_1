@@ -14,18 +14,25 @@ Proyek ini dideploy menggunakan heroku pada link berikut :
 https://todo-list-fph8.herokuapp.com/
 
 ### Dokumentasi
-Untuk melihat dokumentasi postman proyek ini, link berikut dapat diakses :
+Untuk melihat dokumentasi swagger proyek ini, link berikut dapat diakses :
 
-https://documenter.getpostman.com/view/22520213/2s8YespAmW
+https://todo-list-fph8.herokuapp.com/swagger/index.html
 
 ### Pembagian tugas
 Pada pengerjaan final project ini, dilakukan pembagian tugas sebagai berikut :
 
 - Tasya Gracinia
-    - Membuat flow comments
+    - Desain model untuk database
+    - Membuat endpoint delete todos by id
+    - Membuat endpoint update todos by id
 - Muhammad Khoirul Anam
-    - Membuat flow social media
+    - Membuat GitHub Organization
+    - Membuat endpoint post todos
+    - Membuat endpoint get todos by id
+    - Membuat middleware auth
+    - Melakukan deployment ke heroku
 - Alexander
     - Membuat boilerplate project
-    - Membuat flow photos dan user
-    - Melakukan deployment
+    - Melakukan setup Swaggo
+    - Membuat endpoint dan service auth
+    - Membuat endpoint get todos
